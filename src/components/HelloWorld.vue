@@ -1,41 +1,97 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
+  <div>
+    <h1>{{ msg }} a pierwszy to {{ items }}</h1>
+    <div>
+      <input type="file" id="file" name="files" @change="selectIMG" accept="image/*"/>
+      <button @click="loadIMG">Load</button>
+    </div>
     <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
+      <li v-for="(item, index) in items" :key=index>
+        <CVThresh v-if="item.text==='THRESH'" v-model="item.params"/>
+        <CVColor v-else-if="item.text==='COLOR'" v-model="item.params"/>
+        <button @click="up(index)">up</button>
+        <button @click="down(index)">down</button>
+        <button @click="remove(index)">delete</button>
+      </li>
     </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+    <button @click="processIMG">Process</button>
+    <div>
+      <img src="@/assets/logo.png" ref="img" class="img">
+      <canvas id="dstimg" ref="dstimg" class="imgcanvas"></canvas>
+    </div>
   </div>
 </template>
 
 <script>
+import CVColor from '@/components/CVColor.vue';
+import CVThresh from '@/components/CVThresh.vue';
+
 export default {
   name: 'HelloWorld',
+  components: {
+    CVThresh,
+    CVColor,
+  },
   props: {
     msg: String
-  }
+  },
+  data: function() {
+    return {
+      panelTypes: [
+        {text:'THRESH', params: {thresh:0, maxval:0, type:0}},
+        {text:'COLOR', params: {type:11}}
+      ],
+      items: [
+        {text:'COLOR', params: {type:11}},
+        {text:'THRESH', params: {thresh:0, maxval:0, type:0}},
+      ]
+    }
+  },
+  methods:{
+    selectIMG(evt) {
+      console.log(this.$refs)
+      let files = evt.target.files
+      if (!files.length) return
+      this.imgurl = URL.createObjectURL(files[0])
+      console.log('file',files[0])
+    },
+    loadIMG() {
+      if (typeof this.imgurl === 'undefined') return
+      this.$refs.img.src = this.imgurl
+    },
+    processIMG() {
+      let cv = this.$cv
+      let dst = cv.imread(this.$refs.img)
+
+      console.log('procesik')
+      for (let item of this.items){
+        let p = item.params
+
+        if (item.text === 'THRESH'){
+          cv.threshold(dst, dst, p.thresh, p.maxval, p.type)
+        }else if (item.text === 'COLOR'){
+          
+          cv.cvtColor(dst, dst, p.type)
+        }
+      }
+      cv.imshow(this.$refs.dstimg, dst)
+      dst.delete()
+    },
+    up(index) {
+      if (index === 0) return
+      let rows = [this.items[index], this.items[index-1]]
+      this.items.splice(index-1, 2, rows[0], rows[1] )
+    },
+    down(index) {
+      if (index === this.items.length-1) return
+      let temp = this.items[index]
+      this.items[index] = this.items[index+1]
+      this.items[index+1] = temp
+    },
+    remove(index) {
+      this.items.splice(index, 1)
+    },
+  },
 }
 </script>
 
@@ -49,7 +105,6 @@ ul {
   padding: 0;
 }
 li {
-  display: inline-block;
   margin: 0 10px;
 }
 a {
