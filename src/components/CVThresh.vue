@@ -1,11 +1,11 @@
 <template>
   <div>
-    Threshold:
+    <p>Threshold:</p>
     <el-slider show-input v-model.number="params.thresh" :min="0" :max="255"/>
-    Max Value
+    <p>Max Value:</p>
     <el-slider show-input v-model.number="params.maxval" :min="0" :max="255"/>
-    Type
-    <el-select v-model="params.type">
+    <p>Type:</p>
+    <el-select :default-first-option="true" v-model="params.type">
       <el-option v-for="typeValue in typeValues" 
         :key="typeValue.text" :value="typeValue.value" :label="typeValue.text">
       </el-option>
@@ -30,14 +30,6 @@ export default {
         {text:'Binary Inv', value: this.$cv.THRESH_BINARY_INV},
       ]
     }
-  },
-  watch: {
-    params() {
-      let a = this.params.type
-      console.log(a)
-      this.parmas.describe = 'Hihih'
-      console.log('zmiana')
-    },
   },
 }
 </script>
