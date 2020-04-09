@@ -1,16 +1,15 @@
 <template>
   <div>
     Threshold:
-    <input type="range" id="thresh" v-model.number="params.thresh" min="0" max="255">
+    <el-slider show-input v-model.number="params.thresh" :min="0" :max="255"/>
     Max Value
-    <input type="range" id="thresh" v-model.number="params.maxval" min="0" max="255">
+    <el-slider show-input v-model.number="params.maxval" :min="0" :max="255"/>
     Type
-    <select v-model="params.type">
-      <option v-for="typeValues in typeValuess" 
-        :key="typeValues.text" :value="typeValues.value" >
-        {{ typeValues.text }}
-      </option>
-    </select>
+    <el-select v-model="params.type">
+      <el-option v-for="typeValue in typeValues" 
+        :key="typeValue.text" :value="typeValue.value" :label="typeValue.text">
+      </el-option>
+    </el-select>
   </div>
 </template>
 
@@ -26,11 +25,19 @@ export default {
   },
   data: function() {
     return {
-      typeValuess : [
+      typeValues : [
         {text:'Binary', value: this.$cv.THRESH_BINARY},
         {text:'Binary Inv', value: this.$cv.THRESH_BINARY_INV},
       ]
     }
+  },
+  watch: {
+    params() {
+      let a = this.params.type
+      console.log(a)
+      this.parmas.describe = 'Hihih'
+      console.log('zmiana')
+    },
   },
 }
 </script>

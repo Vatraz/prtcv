@@ -1,12 +1,10 @@
 <template>
   <div>
     Type
-    <select v-model="params.type">
-      <option v-for="typeValues in typeValuess" 
-        :key="typeValues.text" :value="typeValues.value" >
-        {{ typeValues.text }}
-      </option>
-    </select>
+    <el-select v-model="params.type">
+      <el-option v-for="typeValue in typeValues" 
+        :key="typeValue.text" :value="typeValue.value" :label="typeValue.text"/>
+    </el-select>
   </div>
 </template>
 
@@ -22,9 +20,9 @@ export default {
   },
   data: function() {
     return {
-      typeValuess : [
-        {text:'BRG -> GRAY', value: this.$cv.COLOR_RGBA2GRAY},
-        {text:'GRAY -> BRG', value: this.$cv.COLOR_GRAY2RGBA},
+      typeValues : [
+        {text:'BRG > GRAY', value: this.$cv.COLOR_RGBA2GRAY},
+        {text:'GRAY > BRG', value: this.$cv.COLOR_GRAY2RGBA},
       ]
     }
   },
