@@ -6,12 +6,13 @@
         <el-option v-for="panelType in panelTypes" 
           :key="panelType" :value="panelType" :label="panelType"/>
       </el-select>
-      <CVThresh v-if="panelAddedType==='THRESH'" v-model="panelAddedParams"/>
-      <CVColor v-else-if="panelAddedType==='COLOR'" v-model="panelAddedParams"/>
+      <CVColor v-if="panelAddedType==='COLOR'" v-model="panelAddedParams"/>
+      <CVBlur v-else-if="panelAddedType==='BLUR'" v-model="panelAddedParams"/>
+      <CVThresh v-else-if="panelAddedType==='THRESH'" v-model="panelAddedParams"/>
 
       <p>
         <el-button type="danger" @click="dialogVisible = false">Cancel</el-button>
-        <el-button type="success" size="medium" @click="add">Add</el-button>
+        <el-button type="success" @click="add">Add</el-button>
       </p>
     </el-dialog>
   </div>
@@ -19,14 +20,16 @@
 
 <script>
 import {CVPanelsLib} from '@/config.js';
-import CVThresh from '@/components/CVThresh.vue';
+import CVBlur from '@/components/CVBlur.vue';
 import CVColor from '@/components/CVColor.vue';
+import CVThresh from '@/components/CVThresh.vue';
 
 export default {
   name: 'CVPanelAddDialog',
   components: {
-    CVThresh,
+    CVBlur,
     CVColor,
+    CVThresh,
   },
   model: {
     prop: 'panels',
@@ -47,20 +50,27 @@ export default {
   },
   methods:{
     add() {
-      let newPanel = {
+      let newPanel = {}
+      Object.assign(newPanel, {
         type: this.panelAddedType,
         params: this.panelAddedParams,
-        visible: false,
-      }
+        visible: false
+        })
       this.panels.push(newPanel)
+      
+      this.dialogVisible = false
+      this.panelAddedParams = {}
+      this.panelAddedType = ''
+      console.log('no i czy sukces sam nie wiem')
     },
   },
   watch: {
-    panelAddedType() {
+    panelAddedType(newValue, oldValue) {
+      if (oldValue == newValue) return
       this.panelAddedParams = {}
       for (let panelTemplate of CVPanelsLib.panelTemplates) {
         if (panelTemplate.type === this.panelAddedType){
-          Object.assign(this.panelAddedParams, panelTemplate.params)
+          this.panelAddedParams = JSON.parse(JSON.stringify(panelTemplate.params))
         }
       }
     }, 

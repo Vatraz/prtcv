@@ -5,11 +5,14 @@
     <p>Max Value:</p>
     <el-slider show-input v-model.number="params.maxval" :min="0" :max="255"/>
     <p>Type:</p>
-    <el-select :default-first-option="true" v-model="params.type">
+    <el-select v-model="params.type">
       <el-option v-for="typeValue in typeValues" 
         :key="typeValue.text" :value="typeValue.value" :label="typeValue.text">
       </el-option>
     </el-select>
+    <p v-if="visible === true">
+      <el-button  @click="$emit('update:visible', false)">Cancel</el-button>
+    </p>
   </div>
 </template>
 
@@ -22,6 +25,11 @@ export default {
   },
   props: {
     params: Object,
+    visible: {
+      type: Boolean,
+      default: false,
+      required: false,
+    }
   },
   data: function() {
     return {
@@ -36,18 +44,5 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
+
 </style>

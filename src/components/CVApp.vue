@@ -5,29 +5,32 @@
       <button @click="loadIMG">Load</button>
       <el-button @click="processIMG">Process</el-button>
     </el-row>
+    <CVPanelsBrief v-model="panels"></CVPanelsBrief>
     <el-collapse>
       <el-collapse-item title="CV flow" name="4">
         <CVPanelsEdit v-model="panels"></CVPanelsEdit>
       </el-collapse-item>
     </el-collapse>
     <el-container>
-        <el-row>
+        <el-col span:12>
           <img src="@/assets/logo.png" ref="img" class="image">
-        </el-row>
-        <el-row>
+        </el-col>
+        <el-col span:12>
           <canvas id="dstimg" ref="dstimg" class="imgcanvas"></canvas>
-        </el-row>
+        </el-col>
     </el-container>
   </div>
 </template>
 
 <script>
+import CVPanelsBrief from '@/components/CVPanelsBrief.vue';
 import CVPanelsEdit from '@/components/CVPanelsEdit.vue';
 import {CVPanelsLib} from '@/config.js';
 
 export default {
   name: 'CVApp',
   components: {
+    CVPanelsBrief,
     CVPanelsEdit,
   },
   props: {
@@ -65,12 +68,14 @@ export default {
         if (panel.type === 'THRESH'){
           cv.threshold(dst, dst, p.thresh, p.maxval, p.type)
         }else if (panel.type === 'COLOR'){
-          
           cv.cvtColor(dst, dst, p.type)
+        }else if (panel.type === 'BLUR'){
+          let ksize = new cv.Size(p.ksize[0], p.ksize[1]);
+          let anchor = new cv.Point(p.anchor[0], p.anchor[1]);
+          cv.blur(dst, dst, ksize, anchor, p.borderType)
         }
       }
       cv.imshow(this.$refs.dstimg, dst)
-      dst.delete()
     },
   },
   mounted() {

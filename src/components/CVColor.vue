@@ -5,6 +5,9 @@
       <el-option v-for="typeValue in typeValues" 
         :key="typeValue.text" :value="typeValue.value" :label="typeValue.text"/>
     </el-select>
+    <!-- <p v-if="visible === true">
+      <el-button  @click="$emit('update:visible', false)">Cancel</el-button>
+    </p> -->
   </div>
 </template>
 
@@ -17,6 +20,11 @@ export default {
   },
   props: {
     params: Object,
+    // visible: {
+    //   type: Boolean,
+    //   default: false,
+    //   required: false,
+    // }
   },
   data: function() {
     return {
