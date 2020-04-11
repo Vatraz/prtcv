@@ -9,7 +9,7 @@
             <el-button type="info" size="mini" @click="up(index)" :disabled="index==0?true:false" 
                 icon="el-icon-arrow-up"></el-button>
             <template v-if="panelVisibleIdx === index">
-              <el-button type="info" size="mini" @click="panelVisibleIdx = null">{{ panel.type }}</el-button>
+              <el-button type="warning" size="mini" @click="panelVisibleIdx = null">{{ panel.type }}</el-button>
             </template>
             <template v-else>
               <el-button type="primary" size="mini" @click="panelVisibleIdx = index">{{ panel.type }}</el-button>
@@ -21,9 +21,9 @@
     <el-col :class="{ bcg: editActive}" :span=12>
       <p v-for="(panel, index) in panels" :key=index>
         <template v-if="panelVisibleIdx === index">
-          <CVThresh v-if="panel.type==='THRESH'" v-model="panel.params"/>
-          <CVBlur v-else-if="panel.type==='BLUR'" v-model="panel.params"/>
-          <CVColor v-else-if="panel.type==='COLOR'" v-model="panel.params"/>
+          <CVEditThresh v-if="panel.type==='THRESH'" v-model="panel.params"/>
+          <CVEditBlur v-else-if="panel.type==='BLUR'" v-model="panel.params"/>
+          <CVEditColor v-else-if="panel.type==='COLOR'" v-model="panel.params"/>
         </template>
       </p>
     </el-col>
@@ -31,18 +31,18 @@
 </template>
 
 <script>
-import CVBlur from '@/components/CVBlur.vue';
-import CVColor from '@/components/CVColor.vue';
-import CVThresh from '@/components/CVThresh.vue';
+import CVEditBlur from '@/components/CVEditBlur.vue';
+import CVEditColor from '@/components/CVEditColor.vue';
+import CVEditThresh from '@/components/CVEditThresh.vue';
 import CVPanelAddDialog from '@/components/CVPanelAddDialog.vue';
 
 
 export default {
   name: 'CVPanelEdit',
   components: {
-    CVBlur,
-    CVColor,
-    CVThresh,
+    CVEditBlur,
+    CVEditColor,
+    CVEditThresh,
     CVPanelAddDialog,
   },
   model: {
@@ -91,7 +91,6 @@ export default {
 }
 div.center {
   text-align:center;  
-  /* margin-bottom: 1%; */
 }
 p {
     margin-bottom: 2%;

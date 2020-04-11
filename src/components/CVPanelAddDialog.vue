@@ -1,14 +1,14 @@
 <template>
   <div>
-    <el-button type="success" size="mini" @click="dialogVisible = true">Add</el-button>
+    <el-button type="success" @click="dialogVisible = true">Add</el-button>
     <el-dialog title="Add panel" :visible.sync="dialogVisible">
       <el-select :default-first-option="true" v-model="panelAddedType">
         <el-option v-for="panelType in panelTypes" 
           :key="panelType" :value="panelType" :label="panelType"/>
       </el-select>
-      <CVColor v-if="panelAddedType==='COLOR'" v-model="panelAddedParams"/>
-      <CVBlur v-else-if="panelAddedType==='BLUR'" v-model="panelAddedParams"/>
-      <CVThresh v-else-if="panelAddedType==='THRESH'" v-model="panelAddedParams"/>
+      <CVEditColor v-if="panelAddedType==='COLOR'" v-model="panelAddedParams"/>
+      <CVEditBlur v-else-if="panelAddedType==='BLUR'" v-model="panelAddedParams"/>
+      <CVEditThresh v-else-if="panelAddedType==='THRESH'" v-model="panelAddedParams"/>
 
       <p>
         <el-button type="danger" @click="dialogVisible = false">Cancel</el-button>
@@ -20,16 +20,16 @@
 
 <script>
 import {CVPanelsLib} from '@/config.js';
-import CVBlur from '@/components/CVBlur.vue';
-import CVColor from '@/components/CVColor.vue';
-import CVThresh from '@/components/CVThresh.vue';
+import CVEditBlur from '@/components/CVEditBlur.vue';
+import CVEditColor from '@/components/CVEditColor.vue';
+import CVEditThresh from '@/components/CVEditThresh.vue';
 
 export default {
   name: 'CVPanelAddDialog',
   components: {
-    CVBlur,
-    CVColor,
-    CVThresh,
+    CVEditBlur,
+    CVEditColor,
+    CVEditThresh,
   },
   model: {
     prop: 'panels',
@@ -61,7 +61,6 @@ export default {
       this.dialogVisible = false
       this.panelAddedParams = {}
       this.panelAddedType = ''
-      console.log('no i czy sukces sam nie wiem')
     },
   },
   watch: {
@@ -84,4 +83,7 @@ export default {
 </script>
 
 <style scoped>
+.el-dialog {
+  width: 80%;
+}
 </style>

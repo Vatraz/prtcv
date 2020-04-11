@@ -23,7 +23,8 @@ export default {
   name: 'CVBlur',
   model: {
     prop: 'params',
-    event: 'change'
+    event: 'change',
+    size: 'mini',
   },
   props: {
     params: Object,
@@ -32,7 +33,6 @@ export default {
     return {
       typeValues : [
         {text:'Default', value: this.$cv.BORDER_DEFAULT},
-        {text:'Wrap', value: this.$cv.BORDER_WRAP},
       ]
     }
   },
@@ -40,4 +40,7 @@ export default {
 </script>
 
 <style scoped>
+.el-input-number {
+  size: "mini";
+}
 </style>

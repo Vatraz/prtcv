@@ -1,36 +1,50 @@
 <template>
   <div>
-    <el-row>
-      <input type="file" id="file" name="files" @change="selectIMG" accept="image/*"/>
-      <button @click="loadIMG">Load</button>
-      <el-button @click="processIMG">Process</el-button>
-    </el-row>
-    <CVPanelsBrief v-model="panels"></CVPanelsBrief>
+    <el-container>
+      <el-col :span="2">
+        <el-switch v-model="srcImageCol" :active-value="12" :inactive-value="0">
+        </el-switch>
+      </el-col>
+      <el-col :span="20">
+        <div class="image">
+          <el-popover placement="bottom" title="Load image" width="300" trigger="hover">
+            <input type="file" id="file" name="files" @change="selectIMG" accept="image/*"/>
+            <el-tag slot="reference" class="button"  effect="dark" type="success" size="mini"><i class="el-icon-upload2"/></el-tag>
+          </el-popover>
+          <el-tag effect="dark" size="mini">SRC <i class="el-icon-caret-right"/></el-tag>
+          <el-tag v-for="panel in panels" :key="panel.id" size="mini">{{ panel.type }} <i class="el-icon-caret-right"/></el-tag>
+          <el-tag effect="dark" size="mini">OUT</el-tag>
+          <a download="output.png" :href="saveIMGurl()">
+            <el-tag class="button" effect="dark" type="success" size="mini"><i class="el-icon-download"/></el-tag>
+          </a>
+        </div>
+      </el-col>
+      <el-col :span="2">
+      </el-col>
+    </el-container>
+    <el-container>
+      <el-col :hidden="!Boolean(srcImageCol)" :span="srcImageCol">
+        <img src="@/assets/logo.png" ref="img">
+      </el-col>
+      <el-col :span="24 - srcImageCol">
+        <canvas id="dstimg" ref="dstimg" class="imgcanvas"></canvas>
+      </el-col>
+    </el-container>
     <el-collapse>
       <el-collapse-item title="CV flow" name="4">
         <CVPanelsEdit v-model="panels"></CVPanelsEdit>
       </el-collapse-item>
     </el-collapse>
-    <el-container>
-        <el-col span:12>
-          <img src="@/assets/logo.png" ref="img" class="image">
-        </el-col>
-        <el-col span:12>
-          <canvas id="dstimg" ref="dstimg" class="imgcanvas"></canvas>
-        </el-col>
-    </el-container>
   </div>
 </template>
 
 <script>
-import CVPanelsBrief from '@/components/CVPanelsBrief.vue';
 import CVPanelsEdit from '@/components/CVPanelsEdit.vue';
 import {CVPanelsLib} from '@/config.js';
 
 export default {
   name: 'CVApp',
   components: {
-    CVPanelsBrief,
     CVPanelsEdit,
   },
   props: {
@@ -39,23 +53,49 @@ export default {
     return {
       panelTemplates: CVPanelsLib.panelTemplates,
       panels: [],
-      imgurl: '',
-      dialogPanelsVisible: false,
+      timerSet: false,
+      timerValueChanged: false,
+      timerValue: 500,
+      srcImageCol: 0,
     }
+  },
+  watch: {
+    panels: {
+      handler() {
+        if (!this.timerSet){
+          this.timerSet = true
+          setTimeout(this.timerStopFun, this.timerValue)
+        } else {
+          this.timerValueChanged = true
+        }
+      },
+      deep: true,
+    },
   },
   methods:{
     selectIMG(evt) {
       let files = evt.target.files
       if (!files.length) return
       this.imgurl = URL.createObjectURL(files[0])
-    },
-    loadIMG() {
       if (typeof this.imgurl === 'undefined') return
+      this.$refs.img.onload = this.processIMG
       this.$refs.img.src = this.imgurl
     },
-    lloadIMG() {
-      if (typeof this.imgurl === 'undefined') return
-      this.$refs.img.src = this.imgurl
+    saveIMGurl() {
+      if (typeof this.$refs.dstimg === 'undefined')
+        return '#'
+      let url = this.$refs.dstimg.toDataURL('image/png')
+      console.log(url)
+      return url
+    },
+    timerStopFun() {
+      if (this.timerValueChanged){
+        this.timerValueChanged = false
+        setTimeout(this.timerStopFun, this.timerValue)
+      } else {
+        this.timerSet = false
+        this.processIMG()
+      }
     },
     processIMG() {
       let cv = this.$cv
@@ -87,7 +127,29 @@ export default {
 </script>
 
 <style scoped>
-.image {
+img {
+  max-width: 100%;
+  height: auto;
+}
+a{
+  margin-left: 2px;
+}
+div.image{
+  text-align: center;
+  margin-bottom: 5px;
+}
+.el-tag + .el-tag {
+  margin-left: 2px;
+}
+.el-tag.button
+{
+  cursor: pointer;
+  margin-right: 2px;
+}
+.el-container {
+  margin-top: 2px;
+}
+canvas {
   max-width: 100%;
   height: auto;
 }
