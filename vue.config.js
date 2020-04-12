@@ -1,3 +1,4 @@
 module.exports = {
-	publicPath: '/prtcv/'
+	publicPath: '/prtcv/',
+	outputDir: 'docs/',
 }

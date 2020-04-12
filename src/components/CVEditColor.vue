@@ -10,7 +10,7 @@
 
 <script>
 export default {
-  name: 'CVColor',
+  name: 'CVEditColor',
   model: {
     prop: 'params',
     event: 'change'

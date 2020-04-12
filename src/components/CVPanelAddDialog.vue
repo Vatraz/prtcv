@@ -6,10 +6,13 @@
         <el-option v-for="panelType in panelTypes" 
           :key="panelType" :value="panelType" :label="panelType"/>
       </el-select>
-      <CVEditColor v-if="panelAddedType==='COLOR'" v-model="panelAddedParams"/>
-      <CVEditBlur v-else-if="panelAddedType==='BLUR'" v-model="panelAddedParams"/>
+      <CVEditBlur v-if="panelAddedType==='BLUR'" v-model="panelAddedParams"/>
+      <CVEditCanny v-else-if="panelAddedType==='CANNY'" v-model="panelAddedParams"/>
+      <CVEditColor v-else-if="panelAddedType==='COLOR'" v-model="panelAddedParams"/>
+      <CVEditErodeDilate v-else-if="panelAddedType==='DILATE'" v-model="panelAddedParams"/>
+      <CVEditErodeDilate v-else-if="panelAddedType==='ERODE'" v-model="panelAddedParams"/>
+      <CVEditSobel v-else-if="panelAddedType==='SOBEL'" v-model="panelAddedParams"/>
       <CVEditThresh v-else-if="panelAddedType==='THRESH'" v-model="panelAddedParams"/>
-
       <p>
         <el-button type="danger" @click="dialogVisible = false">Cancel</el-button>
         <el-button type="success" @click="add">Add</el-button>
@@ -21,14 +24,20 @@
 <script>
 import {CVPanelsLib} from '@/config.js';
 import CVEditBlur from '@/components/CVEditBlur.vue';
+import CVEditCanny from '@/components/CVEditCanny.vue';
 import CVEditColor from '@/components/CVEditColor.vue';
+import CVEditErodeDilate from '@/components/CVEditErodeDilate.vue';
+import CVEditSobel from '@/components/CVEditSobel.vue';
 import CVEditThresh from '@/components/CVEditThresh.vue';
 
 export default {
   name: 'CVPanelAddDialog',
   components: {
     CVEditBlur,
+    CVEditCanny,
     CVEditColor,
+    CVEditErodeDilate,
+    CVEditSobel,
     CVEditThresh,
   },
   model: {
@@ -67,6 +76,7 @@ export default {
     panelAddedType(newValue, oldValue) {
       if (oldValue == newValue) return
       this.panelAddedParams = {}
+      // if selected new panel
       for (let panelTemplate of CVPanelsLib.panelTemplates) {
         if (panelTemplate.type === this.panelAddedType){
           this.panelAddedParams = JSON.parse(JSON.stringify(panelTemplate.params))
@@ -75,6 +85,7 @@ export default {
     }, 
   },
   mounted() {
+    // get panel types
     for (let panelTemplate of CVPanelsLib.panelTemplates) {
       this.panelTypes.push(panelTemplate.type) 
     }

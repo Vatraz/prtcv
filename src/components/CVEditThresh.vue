@@ -18,7 +18,7 @@
 
 <script>
 export default {
-  name: 'CVThresh',
+  name: 'CVEditThresh',
   model: {
     prop: 'params',
     event: 'change'

@@ -2,14 +2,16 @@
   <div>
     <p>Kernel size:</p>
     <p>
-      <el-input-number v-model="params.ksize[0]" :min="1" :max="10"/>
-      <el-input-number v-model="params.ksize[1]" :min="1" :max="10"/>
+      <el-input-number v-model="params.kernel[0]" :min="1" :max="10"/>
+      <el-input-number v-model="params.kernel[1]" :min="1" :max="10"/>
     </p>
     <p>Anchor:</p>
     <p>
       <el-input-number v-model="params.anchor[0]" :min="-1" :max="10"/>
       <el-input-number v-model="params.anchor[1]" :min="-1" :max="10"/>
     </p>
+    <p>Iterations:</p>
+      <el-input-number v-model="params.iterations" :min="1" :max="10"/>
     <p>Border type:</p>
     <el-select v-model="params.borderType">
       <el-option v-for="i in borderTypes" 
@@ -20,7 +22,7 @@
 
 <script>
 export default {
-  name: 'CVEditBlur',
+  name: 'CVEditErodeDilate',
   model: {
     prop: 'params',
     event: 'change',
@@ -36,7 +38,7 @@ export default {
   data: function() {
     return {
       borderTypes : [
-        // {text:'Constant', value: window.cv.BORDER_CONSTANT},
+        {text:'Constant', value: window.cv.BORDER_CONSTANT},
         {text:'Default', value: window.cv.BORDER_DEFAULT},
         {text:'Replicate', value: window.cv.BORDER_REPLICATE},
       ]

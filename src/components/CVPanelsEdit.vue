@@ -21,9 +21,13 @@
     <el-col :class="{ bcg: editActive}" :span=12>
       <p v-for="(panel, index) in panels" :key=index>
         <template v-if="panelVisibleIdx === index">
-          <CVEditThresh v-if="panel.type==='THRESH'" v-model="panel.params"/>
-          <CVEditBlur v-else-if="panel.type==='BLUR'" v-model="panel.params"/>
+          <CVEditBlur v-if="panel.type==='BLUR'" v-model="panel.params"/>
+          <CVEditCanny v-else-if="panel.type==='CANNY'" v-model="panel.params"/>
           <CVEditColor v-else-if="panel.type==='COLOR'" v-model="panel.params"/>
+          <CVEditErodeDilate v-else-if="panel.type==='DILATE'" v-model="panel.params"/>
+          <CVEditErodeDilate v-else-if="panel.type==='ERODE'" v-model="panel.params"/>
+          <CVEditSobel v-else-if="panel.type==='SOBEL'" v-model="panel.params"/>
+          <CVEditThresh v-else-if="panel.type==='THRESH'" v-model="panel.params"/>
         </template>
       </p>
     </el-col>
@@ -32,16 +36,22 @@
 
 <script>
 import CVEditBlur from '@/components/CVEditBlur.vue';
+import CVEditCanny from '@/components/CVEditCanny.vue';
 import CVEditColor from '@/components/CVEditColor.vue';
+import CVEditErodeDilate from '@/components/CVEditErodeDilate.vue';
+import CVEditSobel from '@/components/CVEditSobel.vue';
 import CVEditThresh from '@/components/CVEditThresh.vue';
 import CVPanelAddDialog from '@/components/CVPanelAddDialog.vue';
 
 
 export default {
-  name: 'CVPanelEdit',
+  name: 'CVPanelsEdit',
   components: {
     CVEditBlur,
+    CVEditCanny,
     CVEditColor,
+    CVEditErodeDilate,
+    CVEditSobel,
     CVEditThresh,
     CVPanelAddDialog,
   },

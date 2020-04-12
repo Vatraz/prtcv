@@ -39,7 +39,8 @@
 
 <script>
 import CVPanelsEdit from '@/components/CVPanelsEdit.vue'
-import {CVPanelsLib} from '@/config.js'
+import { CVPanelsLib } from '@/config.js'
+import { Notification } from 'element-ui';
 
 export default {
   name: 'CVApp',
@@ -111,15 +112,45 @@ export default {
         let p = panel.params
         if (panel.type === 'THRESH'){
           cv.threshold(dst, dst, p.thresh, p.maxval, p.type)
-        }else if (panel.type === 'COLOR'){
+        } 
+        else if (panel.type === 'COLOR'){
           cv.cvtColor(dst, dst, p.type)
-        }else if (panel.type === 'BLUR'){
+        } 
+        else if (panel.type === 'BLUR'){
           let ksize = new cv.Size(p.ksize[0], p.ksize[1]);
           let anchor = new cv.Point(p.anchor[0], p.anchor[1]);
           cv.blur(dst, dst, ksize, anchor, p.borderType)
+        } 
+        else if (panel.type === 'CANNY'){
+          if (!this.validInputIMG(dst, panel, 1)) break
+          cv.Canny(dst, dst, p.threshold1, p.threshold2, p.apertureSize, p.L2gradient)
+        } 
+        else if (panel.type === 'DILATE' || panel.type === 'ERODE'){
+          if (!this.validInputIMG(dst, panel, 1)) break
+          let M = cv.Mat.ones(p.kernel[0], p.kernel[1], cv.CV_8U)
+          let anchor = new cv.Point(p.anchor[0], p.anchor[1]);
+          if (panel.type === 'ERODE')
+            cv.erode(dst, dst, M, anchor, p.iterations, p.borderType, cv.morphologyDefaultBorderValue())
+          else
+            cv.dilate(dst, dst, M, anchor, p.iterations, p.borderType, cv.morphologyDefaultBorderValue())
+        } 
+        else if (panel.type === 'SOBEL'){
+          if (!this.validInputIMG(dst, panel, 1)) break
+          cv.Sobel(dst, dst, p.ddepth, p.dx, p.dy, p.ksize, p.scale, p.delta, p.borderType)
         }
       }
       cv.imshow(this.$refs.dstimg, dst)
+    },
+    validInputIMG(image, panel, channelEx) {
+      if (image.channels() !== channelEx) {
+        Notification.error({
+          title: 'Error',
+          message: `Panel ${panel.type}:
+          input image has ${image.channels()} channels (expected ${channelEx})`,
+        })
+        return false
+      }
+      return true
     },
     onloadOpenCV() {  
       window.cv['onRuntimeInitialized'] = () => {
