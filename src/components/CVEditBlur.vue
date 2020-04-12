@@ -32,7 +32,7 @@ export default {
   data: function() {
     return {
       typeValues : [
-        {text:'Default', value: this.$cv.BORDER_DEFAULT},
+        {text:'Default', value: window.cv.BORDER_DEFAULT},
       ]
     }
   },

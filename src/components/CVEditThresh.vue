@@ -34,8 +34,8 @@ export default {
   data: function() {
     return {
       typeValues : [
-        {text:'Binary', value: this.$cv.THRESH_BINARY},
-        {text:'Binary Inv', value: this.$cv.THRESH_BINARY_INV},
+        {text:'Binary', value: window.cv.THRESH_BINARY},
+        {text:'Binary Inv', value: window.cv.THRESH_BINARY_INV},
       ]
     }
   },

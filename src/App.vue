@@ -5,8 +5,8 @@
         <el-header>
           <b>SIUP</b>
         </el-header>
-        <el-main>
-          <CVApp/>
+        <el-main element-loading-text="Loading OpenCV..." v-loading="loading">
+          <CVApp :loading.sync="loading"/>
         </el-main>
       </el-container>
     </el-col>
@@ -20,7 +20,12 @@ export default {
   name: 'app',
   components: {
     CVApp
-  }
+  },
+  data: function() {
+    return {
+      loading: true,
+    }
+  },
 }
 </script>
 

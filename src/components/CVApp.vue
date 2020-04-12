@@ -38,8 +38,8 @@
 </template>
 
 <script>
-import CVPanelsEdit from '@/components/CVPanelsEdit.vue';
-import {CVPanelsLib} from '@/config.js';
+import CVPanelsEdit from '@/components/CVPanelsEdit.vue'
+import {CVPanelsLib} from '@/config.js'
 
 export default {
   name: 'CVApp',
@@ -105,7 +105,7 @@ export default {
       }
     },
     processIMG() {
-      let cv = this.$cv
+      let cv = window.cv
       let dst = cv.imread(this.$refs.img)
       for (let panel of this.panels){
         let p = panel.params
@@ -121,11 +121,22 @@ export default {
       }
       cv.imshow(this.$refs.dstimg, dst)
     },
+    onloadOpenCV() {  
+      window.cv['onRuntimeInitialized'] = () => {
+        let obj = {}
+        Object.assign(obj, CVPanelsLib.panelTemplates[0])
+        this.panels.push(obj)  
+        this.$emit('update:loading', false)
+      }
+    }
   },
   mounted() {
-    let obj = {}
-    Object.assign(obj, CVPanelsLib.panelTemplates[0])
-    this.panels.push(obj)
+    const script = document.createElement('script')
+    script.type = 'text/javascript'
+    script.async = 'async'
+    script.src = `opencv.js`
+    script.onload = this.onloadOpenCV
+    document.body.appendChild(script)
   },
 }
 </script>

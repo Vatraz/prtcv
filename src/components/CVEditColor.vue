@@ -21,8 +21,8 @@ export default {
   data: function() {
     return {
       typeValues : [
-        {text:'BRG > GRAY', value: this.$cv.COLOR_RGBA2GRAY},
-        {text:'GRAY > BRG', value: this.$cv.COLOR_GRAY2RGBA},
+        {text:'BRG > GRAY', value: window.cv.COLOR_RGBA2GRAY},
+        {text:'GRAY > BRG', value: window.cv.COLOR_GRAY2RGBA},
       ]
     }
   },
