@@ -22,19 +22,18 @@
       <el-col :span="2">
       </el-col>
     </el-container>
+    <!-- IMAGES -->
     <el-container>
       <el-col :hidden="!Boolean(srcImageCol)" :span="srcImageCol">
-        <img src="@/assets/logo.png" ref="img">
+        <img src="@/assets/cats.png" ref="img">
       </el-col>
       <el-col :span="24 - srcImageCol">
         <canvas id="dstimg" ref="dstimg" class="imgcanvas"></canvas>
       </el-col>
+    <!-- PANELS EDIT -->
     </el-container>
-    <el-collapse>
-      <el-collapse-item title="CV flow" name="4">
-        <CVPanelsEdit v-model="panels"></CVPanelsEdit>
-      </el-collapse-item>
-    </el-collapse>
+    <el-divider content-position="left">Edit OpenCV components</el-divider>
+    <CVPanelsEdit v-model="panels"></CVPanelsEdit>
   </div>
 </template>
 
@@ -56,18 +55,19 @@ export default {
       timerSet: false,
       timerValueChanged: false,
       timerValue: 500,
-      srcImageCol: 0,
+      srcImageCol: 12,
     }
   },
   watch: {
+    srcImageCol: {
+      handler(newValue, oldValue) {
+        if (newValue > oldValue) return
+        this.processIMGschedule()
+      }
+    },
     panels: {
       handler() {
-        if (!this.timerSet){
-          this.timerSet = true
-          setTimeout(this.timerStopFun, this.timerValue)
-        } else {
-          this.timerValueChanged = true
-        }
+        this.processIMGschedule()
       },
       deep: true,
     },
@@ -85,8 +85,15 @@ export default {
       if (typeof this.$refs.dstimg === 'undefined')
         return '#'
       let url = this.$refs.dstimg.toDataURL('image/png')
-      console.log(url)
       return url
+    },
+    processIMGschedule() {
+      if (!this.timerSet){
+        this.timerSet = true
+        setTimeout(this.timerStopFun, this.timerValue)
+      } else {
+        this.timerValueChanged = true
+      }
     },
     timerStopFun() {
       if (this.timerValueChanged){
@@ -100,11 +107,8 @@ export default {
     processIMG() {
       let cv = this.$cv
       let dst = cv.imread(this.$refs.img)
-
-      console.log('procesik')
       for (let panel of this.panels){
         let p = panel.params
-
         if (panel.type === 'THRESH'){
           cv.threshold(dst, dst, p.thresh, p.maxval, p.type)
         }else if (panel.type === 'COLOR'){

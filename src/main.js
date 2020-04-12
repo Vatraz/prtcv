@@ -5,7 +5,7 @@ import './plugins/element.js'
 import './assets/theme/index.css';
 import './assets/style.css'
 
-document.getElementById("loading").hidden = true
+document.getElementById("loading").remove()
 
 
 Vue.prototype.$cv = cv
