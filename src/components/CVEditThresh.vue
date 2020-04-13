@@ -1,7 +1,7 @@
 <template>
   <div>
     <p>Threshold:</p>
-    <el-slider show-input v-model.number="params.thresh" :min="0" :max="255"/>
+    <el-slider size="mini" show-input v-model.number="params.thresh" :min="0" :max="255"/>
     <p>Max Value:</p>
     <el-slider show-input v-model.number="params.maxval" :min="0" :max="255"/>
     <p>Type:</p>
@@ -42,7 +42,6 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
 </style>

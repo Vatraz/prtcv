@@ -1,13 +1,13 @@
 <template>
-  <div class="background" id="app">
-    <el-col :lg="{offset:4, span:16}" :sm="{offset:1, span:22}" :xs="{offset:0, span:24}">
+  <div id="app">
+    <el-col :xl="{offset:4, span:16}" :lg="{offset:2, span:20}" :sm="{offset:1, span:22}" :xs="{offset:0, span:24}">
       <el-container>
-        <el-header>
+        <el-header >
           <b>SIUP</b>
         </el-header>
-        <el-main element-loading-text="Loading OpenCV..." v-loading="loading">
-          <CVApp :loading.sync="loading"/>
-        </el-main>
+        <el-container>
+          <CVApp/>
+        </el-container>
       </el-container>
     </el-col>
   </div>
@@ -21,11 +21,6 @@ export default {
   components: {
     CVApp
   },
-  data: function() {
-    return {
-      loading: true,
-    }
-  },
 }
 </script>
 
@@ -37,4 +32,16 @@ export default {
     font-size: 22pt;
     line-height: 60px;
   }
+  .el-container .el-container{
+    height: calc(100vh - 60px);
+    width: 100%;
+  }
+  div {
+    font-family: "Helvetica Neue",Helvetica, Arial,sans-serif;
+  }
+  .el-col {
+    border-radius: 4px;
+    background-color: #ffffff;
+}
+  
 </style>

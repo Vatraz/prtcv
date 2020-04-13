@@ -1,6 +1,7 @@
 <template>
   <div>
-    <el-col :span=12>
+    <el-container direction="vertical">
+    <el-main>
       <p v-for="(panel, index) in panels" :key=index>
         <el-button-group>
             <el-button type="danger" size="mini" @click="remove(index)" icon="el-icon-delete"></el-button>
@@ -17,8 +18,9 @@
         </el-button-group>
       </p>
       <p><CVPanelAddDialog v-model="panels"></CVPanelAddDialog></p>
-    </el-col>
-    <el-col :class="{ bcg: editActive}" :span=12>
+    </el-main>
+    <el-footer v-if="panelVisibleIdx !== null">
+      <el-divider content-position="left">Edit component</el-divider>
       <p v-for="(panel, index) in panels" :key=index>
         <template v-if="panelVisibleIdx === index">
           <CVEditBlur v-if="panel.type==='BLUR'" v-model="panel.params"/>
@@ -30,7 +32,9 @@
           <CVEditThresh v-else-if="panel.type==='THRESH'" v-model="panel.params"/>
         </template>
       </p>
-    </el-col>
+    </el-footer>
+    </el-container>
+
   </div>
 </template>
 
@@ -93,19 +97,27 @@ export default {
 </script>
 
 <style scoped>
+.el-button-group {
+  padding: 0px;
+  margin: 0px;
+}
+.el-button {
+  padding: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin: 0px;
+}
+.el-container {
+  height: 100%;
+}
 .el-row {
     margin-bottom: 5px;
-}
-.bcg {
-  background: 5px #C0C4CC;
 }
 div.center {
   text-align:center;  
 }
 p {
-    margin-bottom: 2%;
-    margin-right: 2%;
-    margin-left: 2%;
-
+  margin-top: 0px;
+  margin-bottom: 1px;
 }
 </style>

@@ -1,39 +1,55 @@
 <template>
-  <div>
-    <el-container>
-      <el-col :span="2">
-        <el-switch v-model="srcImageCol" :active-value="12" :inactive-value="0">
-        </el-switch>
-      </el-col>
-      <el-col :span="20">
-        <div class="image">
-          <el-popover placement="bottom" title="Load image" width="300" trigger="hover">
-            <input type="file" id="file" name="files" @change="selectIMG" accept="image/*"/>
-            <el-tag slot="reference" class="button"  effect="dark" type="success" size="mini"><i class="el-icon-upload2"/></el-tag>
-          </el-popover>
-          <el-tag effect="dark" size="mini">SRC <i class="el-icon-caret-right"/></el-tag>
-          <el-tag v-for="panel in panels" :key="panel.id" size="mini">{{ panel.type }} <i class="el-icon-caret-right"/></el-tag>
-          <el-tag effect="dark" size="mini">OUT</el-tag>
-          <a download="output.png" :href="saveIMGurl()">
-            <el-tag class="button" effect="dark" type="success" size="mini"><i class="el-icon-download"/></el-tag>
-          </a>
-        </div>
-      </el-col>
-      <el-col :span="2">
-      </el-col>
-    </el-container>
-    <!-- IMAGES -->
-    <el-container>
-      <el-col :hidden="!Boolean(srcImageCol)" :span="srcImageCol">
-        <img src="@/assets/cats.png" ref="img">
-      </el-col>
-      <el-col :span="24 - srcImageCol">
-        <canvas id="dstimg" ref="dstimg" class="imgcanvas"></canvas>
-      </el-col>
+  <div class="main">
+  <el-container element-loading-text="Loading OpenCV..." v-loading="loading">
     <!-- PANELS EDIT -->
-    </el-container>
-    <el-divider content-position="left">Edit OpenCV components</el-divider>
-    <CVPanelsEdit v-model="panels"></CVPanelsEdit>
+    <el-aside v-if="!hiddenAside" width="230px">
+      <CVPanelsEdit v-model="panels"/>
+    </el-aside>
+    <!-- IMG COLUMN -->
+    <el-main>
+      <!-- if aside is hidden -->
+      <el-row v-if="hiddenAside" style="text-align:right">
+        <el-button  @click="hiddenAsideVisible = true" type="text">
+          EDIT COMPONENTS
+        </el-button>
+        <el-drawer direction="ltr" size="230px" :visible.sync="hiddenAsideVisible" :with-header="false">
+          <CVPanelsEdit v-model="panels"/>
+        </el-drawer>
+      </el-row>
+      <!-- component brief -->
+      <el-row>
+        <el-col :span="3">
+          <el-switch v-model="srcImageCol" :active-value="12" :inactive-value="0">
+          </el-switch>
+        </el-col>
+        <el-col :span="18">
+          <div class="image">
+            <el-popover placement="bottom" title="Load image" width="300" trigger="hover">
+              <input type="file" id="file" name="files" @change="selectIMG" accept="image/*"/>
+              <el-tag slot="reference" class="button"  effect="dark" type="success" size="mini"><i class="el-icon-upload2"/></el-tag>
+            </el-popover>
+            <el-tag effect="dark" size="mini">SRC <i class="el-icon-caret-right"/></el-tag>
+            <el-tag v-for="panel in panels" :key="panel.id" size="mini">{{ panel.type }} <i class="el-icon-caret-right"/></el-tag>
+            <el-tag effect="dark" size="mini">OUT</el-tag>
+            <a download="output.png" :href="saveIMGurl()">
+              <el-tag class="button" effect="dark" type="success" size="mini"><i class="el-icon-download"/></el-tag>
+            </a>
+          </div>
+        </el-col>
+        <el-col :span="3">
+        </el-col>
+      </el-row>
+      <!-- IMAGES -->
+      <el-row >
+        <el-col :hidden="!Boolean(srcImageCol)" :span="srcImageCol">
+          <img  src="@/assets/cats.png" ref="img" class="center"/>
+        </el-col>
+        <el-col :span="24 - srcImageCol">
+          <canvas id="dstimg" ref="dstimg" class="center"/>
+        </el-col>
+      </el-row>
+    </el-main>
+  </el-container>
   </div>
 </template>
 
@@ -57,6 +73,9 @@ export default {
       timerValueChanged: false,
       timerValue: 500,
       srcImageCol: 12,
+      loading: true,
+      hiddenAside: false,
+      hiddenAsideVisible: false,
     }
   },
   watch: {
@@ -155,34 +174,60 @@ export default {
     onloadOpenCV() {  
       window.cv['onRuntimeInitialized'] = () => {
         let obj = {}
-        Object.assign(obj, CVPanelsLib.panelTemplates[0])
+        Object.assign(obj, CVPanelsLib.panelTemplates[2])
         this.panels.push(obj)  
-        this.$emit('update:loading', false)
+        this.loading = false
       }
+    },
+    onResize() {
+      if (window.innerWidth < 768)
+        this.hiddenAside = true
+      else 
+        this.hiddenAside = false
     }
   },
   mounted() {
+    // load OpenCV
     const script = document.createElement('script')
     script.type = 'text/javascript'
     script.async = 'async'
     script.src = `opencv.js`
     script.onload = this.onloadOpenCV
     document.body.appendChild(script)
+
+    window.addEventListener('resize', this.onResize)
+    this.onResize()
+  },
+  beforeDestroy() { 
+    window.removeEventListener('resize', this.onResize); 
   },
 }
 </script>
 
 <style scoped>
-img {
+.center {
   max-width: 100%;
   height: auto;
+  display: block;
+  margin-block-start: 2%;
+  margin-left: auto;
+  margin-right: auto;
 }
+
 a{
   margin-left: 2px;
 }
+div.main {
+  width: 100%
+}
 div.image{
   text-align: center;
+
+    align-items: center;
   margin-bottom: 5px;
+}
+.el-row {
+  margin: 1px;
 }
 .el-tag + .el-tag {
   margin-left: 2px;
@@ -193,10 +238,16 @@ div.image{
   margin-right: 2px;
 }
 .el-container {
-  margin-top: 2px;
+  height: 100%;
 }
-canvas {
-  max-width: 100%;
-  height: auto;
+.el-aside {
+  height: 100%;
+  margin: 0px;
+  border-right: 1px dotted #909399;
+  background-color: #F0F0F0;
+}
+.el-main {
+  width: 100%;
+  height: 100%;
 }
 </style>

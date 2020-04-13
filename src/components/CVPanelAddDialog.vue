@@ -1,6 +1,8 @@
 <template>
   <div>
-    <el-button type="success" @click="dialogVisible = true">Add</el-button>
+    <el-button type="success" @click="dialogVisible = true" class="menu">
+      <i class="el-icon-plus"/>
+    </el-button>
     <el-dialog title="Add panel" :visible.sync="dialogVisible">
       <el-select :default-first-option="true" v-model="panelAddedType">
         <el-option v-for="panelType in panelTypes" 
@@ -96,5 +98,11 @@ export default {
 <style scoped>
 .el-dialog {
   width: 80%;
+}
+.el-button.menu {
+  padding: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin: 0px;
 }
 </style>
