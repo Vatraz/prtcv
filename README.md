@@ -1,4 +1,8 @@
-# ppt_cv
+# prtcv
+
+This is a website for testing some of the OpenCV functions in a browser.
+Available on https://vatraz.github.io/prtcv/
+
 
 ## Project setup
 ```
