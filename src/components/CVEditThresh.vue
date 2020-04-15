@@ -1,9 +1,11 @@
 <template>
   <div>
     <p>Threshold:</p>
-    <el-slider size="mini" show-input v-model.number="params.thresh" :min="0" :max="255"/>
+    <el-input-number v-model="params.thresh" :min="0" :max="255"/>
+    <el-slider size="mini" v-model.number="params.thresh" :min="0" :max="255"/>
     <p>Max Value:</p>
-    <el-slider show-input v-model.number="params.maxval" :min="0" :max="255"/>
+    <el-input-number v-model="params.maxval" :min="0" :max="255"/>
+    <el-slider size="mini" v-model.number="params.maxval" :min="0" :max="255"/>
     <p>Type:</p>
     <el-select v-model="params.type">
       <el-option v-for="typeValue in typeValues" 
@@ -36,6 +38,9 @@ export default {
       typeValues : [
         {text:'Binary', value: window.cv.THRESH_BINARY},
         {text:'Binary Inv', value: window.cv.THRESH_BINARY_INV},
+        {text:'Tozero', value: window.cv.THRESH_TOZERO},
+        {text:'Tozero Inv', value: window.cv.THRESH_TOZERO_INV},
+        {text:'Trunc', value: window.cv.THRESH_TRUNC},
       ]
     }
   },

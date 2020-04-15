@@ -65,7 +65,7 @@ export default {
   },
   data: function() {
     return{
-      panelVisibleIdx: null,
+      panelVisibleIdx: 0,
     }
   },
   computed: {
@@ -91,6 +91,8 @@ export default {
     },
     remove(index) {
       this.panels.splice(index, 1)
+      if (this.panelVisibleIdx === index)
+        this.panelVisibleIdx = null
     },
   },
 }

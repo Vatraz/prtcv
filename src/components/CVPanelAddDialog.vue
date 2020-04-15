@@ -61,6 +61,7 @@ export default {
   },
   methods:{
     add() {
+      if (this.panelAddedType === '') return
       let newPanel = {}
       Object.assign(newPanel, {
         type: this.panelAddedType,

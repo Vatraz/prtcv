@@ -1,9 +1,11 @@
 <template>
   <div>
     <p>Threshold 1:</p>
-      <el-slider show-input v-model.number="params.threshold1" :min="0" :max="255"/>
+      <el-input-number v-model="params.threshold1" :min="0" :max="255"/>
+      <el-slider v-model.number="params.threshold1" :min="0" :max="255"/>
     <p>Threshold 2:</p>
-      <el-slider show-input v-model.number="params.threshold2" :min="0" :max="255"/>
+      <el-input-number v-model="params.threshold2" :min="0" :max="255"/>
+      <el-slider v-model.number="params.threshold2" :min="0" :max="255"/>
     <p>Aperture size:</p>
       <el-input-number v-model="params.apertureSize" :min="1" :max="10"/>
     <p>Edge gradient:</p>
