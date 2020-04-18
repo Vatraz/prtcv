@@ -39,12 +39,12 @@
 </template>
 
 <script>
-import CVEditBlur from '@/components/CVEditBlur.vue';
-import CVEditCanny from '@/components/CVEditCanny.vue';
-import CVEditColor from '@/components/CVEditColor.vue';
-import CVEditErodeDilate from '@/components/CVEditErodeDilate.vue';
-import CVEditSobel from '@/components/CVEditSobel.vue';
-import CVEditThresh from '@/components/CVEditThresh.vue';
+import CVEditBlur from '@/components/panels/CVEditBlur.vue';
+import CVEditCanny from '@/components/panels/CVEditCanny.vue';
+import CVEditColor from '@/components/panels/CVEditColor.vue';
+import CVEditErodeDilate from '@/components/panels/CVEditErodeDilate.vue';
+import CVEditSobel from '@/components/panels/CVEditSobel.vue';
+import CVEditThresh from '@/components/panels/CVEditThresh.vue';
 import CVPanelAddDialog from '@/components/CVPanelAddDialog.vue';
 
 
